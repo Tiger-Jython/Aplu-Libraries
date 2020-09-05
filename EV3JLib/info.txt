@@ -1,0 +1,22 @@
+Create the distribution:
+-------------------------
+Make sure, BrickGate is valid
+Make sure, ev3robot files in mytigerjython\EV3PyLib\ev3robot are valid
+Make sure, files in mytigerjython\EV3Ex are valid
+
+Das Projekt enthaelt auch die Source aus ch.aplu.util und von jsch,
+damit keine weiteren JARs mehr importiert werden muessen.
+
+1. Update readme.txt in e:\mynb\nxtjlib\readme
+2 'Generate JavaDoc' using NetBeans and check for errors
+3. Call make.bat. Set date/time appropriate
+4. Copy all files in d:\myweb\classdoc\ev3jlib to Webserver
+5. Copy file d:\myweb\aplu-home\download\EV3JLib.zip to Webserver
+6. Change with Dreamweaver d:\myweb\aplu-home\ev3jlib_b.jsp : ev3jlib_version 
+   and upload
+7. Sign EV3JLib.jar and copy it on server, folder: webstart
+8. Save EV3JLib directory on s:\backup_think\aplu_ev3jlib
+
+ACHTUNG: Neuen Release der Klassen ch.aplu.ev3 auch auf TigerJython2 Åbernehmen
+NUR: ch.aplu.ev3 und nicht etwas von ch.aplu.util oder jsch (ist in TJ sowieso
+verhanden)

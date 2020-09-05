@@ -1,0 +1,1 @@
+e:\mynb\ApluTurtle\src\ch\aplu\turtle\TurtleFrame.java:1257: warning - @param argument "imagePath" is not a parameter name.

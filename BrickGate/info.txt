@@ -1,0 +1,9 @@
+Create the distribution:
+-------------------------
+
+1. Netbeans: 'Clean and Build' 
+2. Call make.bat. Set date/time appropriate
+3. Kopieren von apludist\BrickGate.jar auf Web server home/download
+4. Kopieren auf clab2 d:/Apache2/htdocs/lego/EV3Autonom/download
+8. Save Project on s:\backup_think\aplu_brickgate
+

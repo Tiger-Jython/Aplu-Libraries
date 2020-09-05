@@ -1,0 +1,15 @@
+Create the distribution:
+-------------------------
+
+Be sure that RaspiTransfer is uptodate (compiled)
+
+1. Update readme.txt
+2 'Generate JavaDoc' using NetBeans and check for errors
+3. Call make.bat. Set date/time appropriate
+4. Copy all files in d:\myweb\classdoc\raspijlib to Webserver
+5. Copy file d:\myweb\aplu-home\download\RaspiJLib.zip to Webserver
+6. Change with Dreamweaver d:\myweb\aplu-home\raspibrick_b.jsp : raspijlib_version 
+   and upload
+7. Sign RaspiJLib.jar and copy it on server, folder: webstart
+8. Save RaspiJLib directory on s:\backup_think\aplu_raspijlib
+

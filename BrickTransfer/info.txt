@@ -1,0 +1,7 @@
+Part of EV3JLibA distribution
+
+Aber: von Hand mit Libraries zusammenpacken und auf aplu server
+
+home/download/BrickTransfer.jar
+
+kopieren

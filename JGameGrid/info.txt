@@ -1,0 +1,30 @@
+Create the distribution:
+-------------------------
+Be sure that e:\dropbox\mytigerjython\...ex directories are clean
+Be sure that RobotSim is compiled and JavaDoc created (run mdoc)
+Be sure that RaspiSim is compiled and JavaDoc created (run mdoc)
+Be sure that GGKinect is compiled and JavaDoc created
+Be sure that all examples are up-to-date 
+(including CardGameEx, CardGameExSecond)
+
+spriteimages in e:\SpritePictures muessen updated sein
+
+Achtung: JGameGrid.properties muss alles default sein
+
+
+
+1. Update readme.txt in e:\mynb\jgamegrid\readme
+2. Compile the package using NetBeans: Clean & Build
+2a. Create Java doc by using Create Javadoc
+2b. Close NetBeans!
+3. Call make.bat
+4. Check t.txt where you find the errors/warning of JavaDoc
+5. Copy all files in d:\myweb\classdoc\jgamegrid to Webserver
+5a. Copy all files in d:\myweb\classdoc\robotsim to Webserver
+5b. Copy all files in d:\myweb\classdoc\raspisim to Webserver
+6. Copy file d:\myweb\aplu-home\download\JGameGrid.zip to Webserver
+7. Change with Dreamweaver d:\myweb\aplu-home\jgamegrid_b.jsp : jgamegrid_version 
+   and upload
+8. Save JGameGrid.zip and src on f:\backup_hp\aplu_jgamegrid\Vn.nn
+9. JGameGrid.jar und RobotSim.jar signieren und in Webstart kopieren
+

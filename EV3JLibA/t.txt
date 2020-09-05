@@ -1,0 +1,209 @@
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\I2CSensor.java:21: error: package lejos.hardware.sensor does not exist
+  protected lejos.hardware.sensor.I2CSensor is;
+                                 ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\I2CSensor.java:164: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.I2CSensor getLejosI2CSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\Sensor.java:24: error: package lejos.hardware.sensor does not exist
+  protected lejos.hardware.sensor.SensorMode sm;
+                                 ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\Sensor.java:25: error: package lejos.hardware.port does not exist
+  private lejos.hardware.port.Port sp;
+                             ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\Sensor.java:31: error: package lejos.hardware.port does not exist
+  public lejos.hardware.port.Port getLejosPort()
+                            ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\Sensor.java:58: error: package lejos.hardware.port does not exist
+  private lejos.hardware.port.Port getSensorPort(SensorPort port)
+                             ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\LegoRobot.java:16: error: package lejos.hardware.lcd does not exist
+import lejos.hardware.lcd.LCD;
+                         ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\LegoRobot.java:17: error: package lejos.hardware does not exist
+import lejos.hardware.Sound;
+                     ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\LegoRobot.java:18: error: package lejos.hardware does not exist
+import lejos.hardware.Battery;
+                     ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\LegoRobot.java:19: error: package lejos.hardware does not exist
+import lejos.hardware.Brick;
+                     ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\LegoRobot.java:20: error: package lejos.hardware does not exist
+import lejos.hardware.Button;
+                     ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\LegoRobot.java:21: error: package lejos.hardware does not exist
+import lejos.hardware.LED;
+                     ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\LegoRobot.java:22: error: package lejos.hardware.ev3 does not exist
+import lejos.hardware.ev3.LocalEV3;
+                         ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\LegoRobot.java:101: error: cannot find symbol
+  private LED led;
+          ^
+  symbol:   class LED
+  location: class LegoRobot
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\ColorSensor.java:22: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.EV3ColorSensor cs;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\ColorSensor.java:124: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.EV3ColorSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\Motor.java:44: error: package lejos.hardware.motor does not exist
+  public lejos.hardware.motor.EV3LargeRegulatedMotor getLejosMotor()
+                             ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\GenericMotor.java:67: error: package lejos.hardware.motor does not exist
+  protected lejos.hardware.motor.NXTRegulatedMotor _getMot()
+                                ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\GenericMotor.java:72: error: package lejos.hardware.motor does not exist
+  protected lejos.hardware.motor.EV3LargeRegulatedMotor getMot()
+                                ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\GenericMotor.java:77: error: package lejos.hardware.motor does not exist
+  protected lejos.hardware.motor.EV3MediumRegulatedMotor getMediumMot()
+                                ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\GenericMotor.java:458: error: package lejos.hardware.port does not exist
+  protected static lejos.hardware.port.Port getMotorPort(MotorPort port)
+                                      ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\NxtMotor.java:44: error: package lejos.hardware.motor does not exist
+  public lejos.hardware.motor.NXTRegulatedMotor getLejosMotor()
+                             ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\GenericIRSensor.java:50: error: package lejos.hardware.sensor does not exist
+  protected lejos.hardware.sensor.EV3IRSensor irSensor;
+                                 ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\GenericIRSensor.java:85: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.EV3IRSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\GyroAngleSensor.java:23: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.EV3GyroSensor gs;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\GyroAngleSensor.java:63: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.EV3GyroSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\GyroRateSensor.java:22: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.EV3GyroSensor gs;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\GyroRateSensor.java:61: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.EV3GyroSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTAccelerometer.java:21: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.HiTechnicAccelerometer am;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTAccelerometer.java:60: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.HiTechnicAccelerometer getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTBarometer.java:21: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.HiTechnicBarometer htb;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTBarometer.java:60: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.HiTechnicBarometer getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTColorSensor.java:22: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.HiTechnicColorSensor hcs;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTColorSensor.java:61: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.HiTechnicColorSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTCompassSensor.java:20: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.HiTechnicCompass htcp;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTCompassSensor.java:60: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.HiTechnicCompass getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTEopdSensor.java:23: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.HiTechnicEOPD pd;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTEopdSensor.java:64: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.HiTechnicEOPD getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTEopdShortSensor.java:23: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.HiTechnicEOPD pd;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTEopdShortSensor.java:64: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.HiTechnicEOPD getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTGyroSensor.java:25: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.HiTechnicGyro gs;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTGyroSensor.java:75: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.HiTechnicGyro getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTInfraredSeeker.java:27: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.HiTechnicIRSeekerV2 is;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTInfraredSeeker.java:79: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.HiTechnicIRSeekerV2 getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTInfraredSeekerV2.java:29: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.HiTechnicIRSeekerV2 is;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\HTInfraredSeekerV2.java:80: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.HiTechnicIRSeekerV2 getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\I2CExpander.java:24: error: package lejos.hardware.port does not exist
+  private lejos.hardware.port.I2CPort myPort;
+                             ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\I2CExpander.java:25: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.I2CSensor is;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\LightSensor.java:112: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.EV3ColorSensor cs;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\LightSensor.java:242: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.EV3ColorSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\MediumMotor.java:45: error: package lejos.hardware.motor does not exist
+  public lejos.hardware.motor.EV3MediumRegulatedMotor getLejosMotor()
+                             ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\NxtColorSensor.java:22: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.NXTColorSensor cs;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\NxtColorSensor.java:62: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.NXTColorSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\NxtLightSensor.java:112: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.NXTLightSensor ls;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\NxtLightSensor.java:239: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.NXTLightSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\NxtSoundSensor.java:111: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.NXTSoundSensor ss;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\NxtSoundSensor.java:223: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.NXTSoundSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\NxtTouchSensor.java:111: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.NXTTouchSensor ts;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\NxtTouchSensor.java:209: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.NXTTouchSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\NxtUltrasonicSensor.java:111: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.NXTUltrasonicSensor us;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\NxtUltrasonicSensor.java:227: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.NXTUltrasonicSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\ShowError.java:15: error: package lejos.hardware.lcd does not exist
+import lejos.hardware.lcd.LCD;
+                         ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\ShowError.java:16: error: package lejos.hardware does not exist
+import lejos.hardware.Sound;
+                     ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\Tools.java:15: error: package lejos.hardware does not exist
+import lejos.hardware.Button;
+                     ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\Tools.java:16: error: package lejos.hardware.lcd does not exist
+import lejos.hardware.lcd.LCD;
+                         ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\TouchSensor.java:111: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.EV3TouchSensor ts;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\TouchSensor.java:209: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.EV3TouchSensor getLejosSensor()
+                              ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\UltrasonicSensor.java:111: error: package lejos.hardware.sensor does not exist
+  private lejos.hardware.sensor.EV3UltrasonicSensor us;
+                               ^
+e:\dropbox\mynb_ev3\EV3JLibA\src\ch\aplu\ev3\UltrasonicSensor.java:227: error: package lejos.hardware.sensor does not exist
+  public lejos.hardware.sensor.EV3UltrasonicSensor getLejosSensor()
+                              ^

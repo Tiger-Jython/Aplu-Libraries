@@ -1,0 +1,25 @@
+Create the distribution:
+-------------------------
+
+1. Update readme.txt in e:\mynb\nxtjlib\readme
+2. Netbeans: 'Clean and Build' 
+3 'Generate JavaDoc' using NetBeans and check for errors
+4. Call make.bat. Set date/time appropriate
+5. Copy all files in d:\myweb\classdoc\ev3jliba to Webserver
+6. Copy file d:\myweb\aplu-home\download\EV3JLibA.zip to Webserver
+7. Change with Dreamweaver d:\myweb\aplu-home\ev3jliba_b.jsp : ev3jlib_version 
+   and upload
+8. Save folder EV3JLibA on s:\backup_think\aplu_ev3jliba
+
+ACHTUNG: Diesen neuen Release von EV3LibA.jar auch fuer BrickUpdate Åbernehmen
+Die Dateien:
+
+BrickGate.jar
+ev3classes.jar
+EV3LibA.jar
+EV3PyLib.zip
+version
+
+befinden sich auf clab2: /Apache2/htdocs/lego/EV3SDcardUpdate
+
+auch event. version anpassen

@@ -1,0 +1,8 @@
+Compilieren mit Netbeans
+
+
+mdoc ausfueheren!!!!
+Dann classdoc files von RaspiSim mit Dreamweaver auf Server kopieren
+
+Wird dann automatisch in JGameGrid distribution uebernommen
+

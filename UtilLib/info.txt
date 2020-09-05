@@ -1,0 +1,30 @@
+Create the distribution:
+-------------------------
+
+Run with administrator rights!!!!!!!!!!!!
+
+Be sure that ApluTurtle is compiled and JavaDoc created and debugged
+Be sure that UtilLib is compiled and JavaDoc created and debugged
+
+The version is the max of versions in UtilLib and ApluTurtle
+
+
+1. Update readme.txt in e:\mynb\utillib\readme
+2. Call mdist.bat, set time to version
+3. Check t.txt where you find the errors/warning of JavaDoc
+4. Copy all files in d:\myweb\classdoc\util to Webserver
+5. Copy all files in d:\myweb\classdoc\turtle to Webserver
+6. Copy file d:\myweb\aplu-home\download\aplu5.zip to Webserver
+7. Copy file d:\myweb\aplu-home\download\aplujar5.zip to Webserver
+8. Copy file d:\myweb\aplu-home\download\apludoc.zip to Webserver
+9. Anpassung der Version auf der Website: 
+   - Mit Navicat Tabelle versioninfo updaten
+   - Mit DreamWeaver d:\myweb\aplu-home\aplulib_b.jsp
+10. Source-Verzeichnisse von TurtleLib und UtilLib auf 
+    g:\back_think\aplu_sources kopieren
+11. aplu5.jar signieren und auf Server in /tomcat/webapps/webstart
+
+
+
+ 
+
