@@ -1,6 +1,6 @@
 # mbm.py
 # Programming interface to the MicroBit manager
-# Aug. 2017, AP
+# Feb 2022
 
 from ch.aplu.mbm import MBM
 from java.io import File

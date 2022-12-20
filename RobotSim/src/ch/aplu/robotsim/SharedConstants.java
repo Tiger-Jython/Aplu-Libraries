@@ -77,6 +77,10 @@ Author: Aegidius Pluess, www.aplu.ch
  * V1.35 - Oct 2015  - UltrasonicListerner now derived from EventListener
  * V1.36 - May 2016  - RobotContext checks if called after robot creation
  * V1.37 - Jun 2016  - Fixed: RobotContext check crash in second invocation
+ * V1.38 - Jul 2019  - Added: Support for LED
+ * V1.39 - Aug 2019  - Added: Imgages of rotating wheels
+ * V1.40 - Aug 2019  - Fixed: Simulation with one motor only
+ * V1.41 - Aug 2019  - Added: RobotContext.showTrace(), RobotContext.showRotCenter()
  */
 
 package ch.aplu.robotsim;  
@@ -99,9 +103,9 @@ interface SharedConstants
 
 
   String ABOUT =
-    "2003-2016 Aegidius Pluess\n" +
+    "2003-2019 Aegidius Pluess\n" +
     "OpenSource Free Software\n" +
     "http://www.aplu.ch\n" +
     "All rights reserved";
-  String VERSION = "1.37 - June 2016";
+  String VERSION = "1.41 - August 2019";
 }

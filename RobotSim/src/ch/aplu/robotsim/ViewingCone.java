@@ -184,71 +184,92 @@ class ViewingCone extends Triangle
 
   private static void paintCone(GGBackground bg, GGVector a, GGVector b)
   {
-    drawLine(bg, a, b);
-    GGVector axe = b.sub(a);
-    GGVector border1 = axe.clone();
-    GGVector border2 = axe.clone();
-    border1.rotate(apexAngle / 2);
-    border2.rotate(-apexAngle / 2);
-    drawLine(bg, a, a.add(border1));
-    drawLine(bg, a, a.add(border2));
+    synchronized (bg)
+    {
+      drawLine(bg, a, b);
+      GGVector axe = b.sub(a);
+      GGVector border1 = axe.clone();
+      GGVector border2 = axe.clone();
+      border1.rotate(apexAngle / 2);
+      border2.rotate(-apexAngle / 2);
+      drawLine(bg, a, a.add(border1));
+      drawLine(bg, a, a.add(border2));
+    }
   }
 
   private static void paintCircle(GGBackground bg, Point center, int radius)
   {
-    bg.drawCircle(center, radius);
+    synchronized (bg)
+    {
+      bg.drawCircle(center, radius);
+    }
   }
 
   public void drawProximityCircle(GGBackground bg, int radius, Color color)
   {
-    Color oldPaintColor = bg.getPaintColor();
-    bg.setXORMode(color);
-    if (oldCircle != null)
+    synchronized (bg)
     {
-      paintCircle(bg, toPoint(oldCircle.center), (int)(oldCircle.radius));   // Erase old
-      oldCircle = null;
+      Color oldPaintColor = bg.getPaintColor();
+      bg.setXORMode(color);
+      if (oldCircle != null)
+      {
+        paintCircle(bg, toPoint(oldCircle.center), (int)(oldCircle.radius));   // Erase old
+        oldCircle = null;
+      }
+      if (radius > 0)
+      {
+        paintCircle(bg, toPoint(apex), radius);
+        oldCircle = new GGCircle(apex, radius);
+      }
+      bg.setPaintMode();
+      bg.setPaintColor(oldPaintColor);
     }
-    if (radius > 0)
-    {
-      paintCircle(bg, toPoint(apex), radius);
-      oldCircle = new GGCircle(apex, radius);
-    }
-    bg.setPaintMode();
-    bg.setPaintColor(oldPaintColor);
   }
 
   public void drawCone(GGBackground bg, Color color)
   {
-    Color oldPaintColor = bg.getPaintColor();
-    bg.setXORMode(color);
-    if (oldApex == null)
-      paintCone(bg, apex, baseCenter);
-    else
+    synchronized (bg)
     {
-      paintCone(bg, oldApex, oldBaseCenter);   // Erase old
-      paintCone(bg, apex, baseCenter);
+      Color oldPaintColor = bg.getPaintColor();
+      bg.setXORMode(color);
+      if (oldApex == null)
+        paintCone(bg, apex, baseCenter);
+      else
+      {
+        paintCone(bg, oldApex, oldBaseCenter);   // Erase old
+        paintCone(bg, apex, baseCenter);
+      }
+      oldApex = apex;
+      oldBaseCenter = baseCenter;
+      bg.setPaintMode();
+      bg.setPaintColor(oldPaintColor);
     }
-    oldApex = apex;
-    oldBaseCenter = baseCenter;
-    bg.setPaintMode();
-    bg.setPaintColor(oldPaintColor);
   }
 
   protected static void eraseCone(GGBackground bg)
   {
-    paintCone(bg, oldApex, oldBaseCenter);
-    oldApex = null;
+    synchronized (bg)
+    {
+      paintCone(bg, oldApex, oldBaseCenter);
+      oldApex = null;
+    }
   }
 
   protected static void eraseProximityCircle(GGBackground bg)
   {
-    paintCircle(bg, toPoint(oldCircle.center), (int)oldCircle.radius);
-    oldCircle = null;
+    synchronized (bg)
+    {
+      paintCircle(bg, toPoint(oldCircle.center), (int)oldCircle.radius);
+      oldCircle = null;
+    }
   }
 
   private static void drawLine(GGBackground bg, GGVector v1, GGVector v2)
   {
-    bg.drawLine(toPoint(v1), toPoint(v2));
+    synchronized (bg)
+    {
+      bg.drawLine(toPoint(v1), toPoint(v2));
+    }
   }
 
   private static Point toPoint(GGVector v)

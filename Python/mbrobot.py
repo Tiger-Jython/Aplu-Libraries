@@ -1,6 +1,6 @@
 # mbrobot.py
 # AP
-# Version 1.16, Aug 11, 2019
+# Version 1.18, June 30, 2021
 
 from javax.swing import *
 from java.awt import *
@@ -8,13 +8,16 @@ from java.lang import RuntimeException
 import sys
 
 from ch.aplu.robotsim import LegoRobot
+
+del print
+
 if LegoRobot.getGameGrid() != None:
     LegoRobot.getGameGrid().dispose()
 
 try:
     from ch.aplu.mbrobotsim import *
 except:
-    print "Restart TigerJython when changing the robot."
+    print("Restart TigerJython when changing the robot.")
     sys.exit()
 
 
@@ -80,7 +83,11 @@ class _MyLed:
             _makeRobot()
             _leds[self._id] = Led(self._id)
         if v == 1:
-	    _leds[self._id].setColor(255, 50, 0)
+            _leds[self._id].setColor(255, 50, 0)
+        elif v == 2:
+            _leds[self._id].setColor(0, 255, 0)
+        elif v == 3:
+            _leds[self._id].setColor(0, 0, 255)        
         else:
             _leds[self._id].setColor(Color.black)
 
@@ -196,6 +203,12 @@ def setSpeed(speed):
     _makeGear()
     _gear.setSpeed(speed)
     
+def setPID(nn):
+    if nn == 1:
+        setSpeed(20)
+    if nn == 0:
+        setSpeed(50)
+        
 def exit():
     _makeRobot()
     _robot.exit()
@@ -207,11 +220,24 @@ sleep = delay
 
 def playTone(frequency, duration):
     _makeRobot()
-    return _robot.playTone(frequency, duration)
+    _robot.playTone(frequency, duration)
 
 def setLED(on):
+    _makeRobot()
     ledLeft.write_digital(on)
     ledRight.write_digital(on)
+
+def setLEDLeft(on):
+    _makeRobot()
+    ledLeft.write_digital(on)
+
+def setLEDRight(on):
+    _makeRobot()
+    ledRight.write_digital(on)	
+	
+def setAlarm(on):
+    _makeRobot()
+    _robot.setAlarm(on)
 
 # ------------------- private variables ----------------
 _robot = None

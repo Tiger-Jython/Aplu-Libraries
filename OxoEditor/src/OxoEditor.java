@@ -1,0 +1,794 @@
+// OxoEditor.java
+
+import ch.aplu.jgamegrid.*;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import java.lang.Math.*;
+
+public class OxoEditor extends JFrame
+{
+  private String VERSION = "V 1.02 (April 16, 2018)";
+  private Color matrixGridColor = Color.GRAY;
+
+  private class MyMouseAdapter1 implements GGMouseListener
+  {
+    public boolean mouseEvent(GGMouse mouse)
+    {
+      badMatrixFormatLabel.setVisible(false);
+      illegalColorLabel.setText("       ");
+      int x = mouse.getX();
+      int y = mouse.getY();
+      int r = 80;
+      for (int i = 0; i < 8; i++)
+      {
+        for (int k = 0; k < 8; k++)
+        {
+          double dx = (coordMatrix[i][k].x - x);
+          double dy = (coordMatrix[i][k].y - y);
+          if (dx * dx + dy * dy < r)
+          {
+            GGBackground bg1 = ledGameGrid.getBg();
+            GGBackground bg2 = matrixGameGrid.getBg();
+            String s = customColorTextField.getText();
+            Color color = hexToColor(s);
+            if (color == null)
+            {
+              illegalColorLabel.setText("Illegal color!");
+              previewColorPanel.setBackground(null);
+              return false;
+            }
+            bg1.setPaintColor(color);
+            previewColorPanel.setBackground(color);
+            bg1.fillCircle(coordMatrix[i][k], 6);
+            Location loc = new Location(k, i);
+            bg2.fillCell(loc, color);
+            bg2.drawGridLines(matrixGridColor);
+            colorMatrix[i][k] = color;
+            return false;
+          }
+        }
+      }
+      return false;
+    }
+  }
+
+  private class MyMouseAdapter2 implements GGMouseListener
+  {
+    public boolean mouseEvent(GGMouse mouse)
+    {
+      badMatrixFormatLabel.setVisible(false);
+      illegalColorLabel.setText("       ");
+      int x = mouse.getX();
+      int y = mouse.getY();
+      Location loc = matrixGameGrid.toLocationInGrid(x, y);
+      GGBackground bg1 = ledGameGrid.getBg();
+      GGBackground bg2 = matrixGameGrid.getBg();
+      String s = customColorTextField.getText();
+      Color color = hexToColor(s);
+      if (color == null)
+      {
+        illegalColorLabel.setText("Illegal color!");
+        previewColorPanel.setBackground(null);
+        return false;
+      }
+      previewColorPanel.setBackground(color);
+      bg1.setPaintColor(color);
+      bg1.fillCircle(coordMatrix[loc.y][loc.x], 6);
+      bg2.fillCell(loc, color);
+      bg2.drawGridLines(matrixGridColor);
+      colorMatrix[loc.y][loc.x] = color;
+      return false;
+    }
+  }
+
+  public OxoEditor()
+  {
+    initComponents();
+    illegalColorLabel.setText("       ");
+    customColorTextField.setText("0xffffff");
+    previewColorPanel.setBackground(Color.WHITE);
+    badMatrixFormatLabel.setVisible(false);
+    colorChooser.setPreviewPanel(new JPanel());
+    decRadioButton.setSelected(false); // Decimal
+    hexRadioButton.setSelected(true); // Hex
+    cRadioButton.setSelected(false); // C/C++
+    pythonRadioButton.setSelected(true); // Python
+    ledGameGrid.setBgImagePath("sprites/oxocard.gif");
+    ledGameGrid.setGridColor(new Color(0, 0, 0, 0));
+    ledGameGrid.setNbHorzCells(12);
+    ledGameGrid.setNbVertCells(24);
+    ledGameGrid.setCellSize(20);
+    ledGameGrid.addMouseListener(new MyMouseAdapter1(), GGMouse.lPress | GGMouse.lDrag);
+    ledGameGrid.setSimulationPeriod(100);
+    ledGameGrid.doRun();
+    matrixGameGrid.setBgColor(Color.BLACK);
+    matrixGameGrid.setNbHorzCells(8);
+    matrixGameGrid.setNbVertCells(8);
+    matrixGameGrid.getBg().drawGridLines(matrixGridColor);
+    matrixGameGrid.addMouseListener(new MyMouseAdapter2(), GGMouse.lPress | GGMouse.lDrag);
+    matrixGameGrid.setSimulationPeriod(100);
+    matrixGameGrid.doRun();
+    setTitle("OxoEditor " + VERSION + " [www.aplu.ch]");
+    reductionFactorTextField.setText("2");
+
+    double x0 = 20;
+    double y0 = 142.1;
+    int x, y;
+    GGBackground bg = ledGameGrid.getBg();
+    bg.setPaintColor(Color.black);
+    for (int i = 0; i < 8; i++)
+    {
+      for (int k = 0; k < 8; k++)
+      {
+        x = (int)Math.round(x0 + k * 28.1);
+        y = (int)Math.round(y0 + i * 28.5);
+        Point pt = new Point(x, y);
+        bg.fillCircle(pt, 6);
+        coordMatrix[i][k] = pt;
+        colorMatrix[i][k] = new Color(0, 0, 0);
+      }
+    }
+
+    colorChooser.setColor(Color.WHITE);
+    colorChooser.getSelectionModel().addChangeListener(new javax.swing.event.ChangeListener()
+    {
+      @Override
+      public void stateChanged(ChangeEvent arg0)
+      {
+        badMatrixFormatLabel.setVisible(false);
+        Color color = colorChooser.getColor();
+        customColorTextField.setText(String.format("0x%06x", colorToInt(color, 1)));
+        previewColorPanel.setBackground(color);
+      }
+    });
+
+  }
+
+  /** This method is called from within the constructor to
+   * initialize the form.
+   * WARNING: Do NOT modify this code. The content of this method is
+   * always regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
+  // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+  private void initComponents()
+  {
+
+    jPanel2 = new javax.swing.JPanel();
+    ledGameGrid = new ch.aplu.jgamegrid.GameGrid();
+    jPanel3 = new javax.swing.JPanel();
+    jScrollPane1 = new javax.swing.JScrollPane();
+    matrixTextField = new javax.swing.JTextArea();
+    colorChooser = new javax.swing.JColorChooser();
+    matrixGameGrid = new ch.aplu.jgamegrid.GameGrid();
+    jPanel1 = new javax.swing.JPanel();
+    decRadioButton = new javax.swing.JRadioButton();
+    hexRadioButton = new javax.swing.JRadioButton();
+    jPanel5 = new javax.swing.JPanel();
+    cRadioButton = new javax.swing.JRadioButton();
+    pythonRadioButton = new javax.swing.JRadioButton();
+    jPanel6 = new javax.swing.JPanel();
+    reductionFactorTextField = new java.awt.TextField();
+    createButton = new javax.swing.JButton();
+    showMatrixButton = new javax.swing.JButton();
+    badMatrixFormatLabel = new javax.swing.JLabel();
+    jPanel4 = new javax.swing.JPanel();
+    customColorTextField = new java.awt.TextField();
+    illegalColorLabel = new javax.swing.JLabel();
+    previewColorPanel = new javax.swing.JPanel();
+    clearButton = new javax.swing.JButton();
+
+    setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+    jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+    ledGameGrid.setGridColor(new java.awt.Color(0, 80, 0));
+    ledGameGrid.setNbVertCells(12);
+
+    javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+    jPanel2.setLayout(jPanel2Layout);
+    jPanel2Layout.setHorizontalGroup(
+      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel2Layout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(ledGameGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+    jPanel2Layout.setVerticalGroup(
+      jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel2Layout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(ledGameGrid, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE))
+    );
+
+    jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Color Matrix"));
+
+    jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+    jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+    matrixTextField.setBackground(new java.awt.Color(204, 255, 255));
+    matrixTextField.setColumns(20);
+    matrixTextField.setFont(new java.awt.Font("Courier New", 0, 10)); // NOI18N
+    matrixTextField.setRows(5);
+    matrixTextField.setDisabledTextColor(new java.awt.Color(102, 102, 255));
+    jScrollPane1.setViewportView(matrixTextField);
+
+    javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+    jPanel3.setLayout(jPanel3Layout);
+    jPanel3Layout.setHorizontalGroup(
+      jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addComponent(jScrollPane1)
+    );
+    jPanel3Layout.setVerticalGroup(
+      jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+    );
+
+    matrixGameGrid.setGridColor(new java.awt.Color(0, 80, 0));
+    matrixGameGrid.setNbVertCells(12);
+
+    jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Format"));
+
+    decRadioButton.setText("Decimal");
+    decRadioButton.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        decRadioButtonActionPerformed(evt);
+      }
+    });
+
+    hexRadioButton.setText("Hex");
+    hexRadioButton.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        hexRadioButtonActionPerformed(evt);
+      }
+    });
+
+    javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+    jPanel1.setLayout(jPanel1Layout);
+    jPanel1Layout.setHorizontalGroup(
+      jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+        .addComponent(hexRadioButton)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(decRadioButton, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addGap(22, 22, 22))
+    );
+    jPanel1Layout.setVerticalGroup(
+      jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel1Layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(decRadioButton)
+          .addComponent(hexRadioButton))
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+
+    jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Language"));
+
+    cRadioButton.setText("C/C++");
+    cRadioButton.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        cRadioButtonActionPerformed(evt);
+      }
+    });
+
+    pythonRadioButton.setText("Python");
+    pythonRadioButton.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        pythonRadioButtonActionPerformed(evt);
+      }
+    });
+
+    javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+    jPanel5.setLayout(jPanel5Layout);
+    jPanel5Layout.setHorizontalGroup(
+      jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(pythonRadioButton)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+        .addComponent(cRadioButton)
+        .addGap(37, 37, 37))
+    );
+    jPanel5Layout.setVerticalGroup(
+      jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel5Layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+          .addComponent(cRadioButton)
+          .addComponent(pythonRadioButton))
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+
+    jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Reduction Factor (1..50)"));
+
+    reductionFactorTextField.setText("10");
+
+    javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+    jPanel6.setLayout(jPanel6Layout);
+    jPanel6Layout.setHorizontalGroup(
+      jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel6Layout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(reductionFactorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addContainerGap(100, Short.MAX_VALUE))
+    );
+    jPanel6Layout.setVerticalGroup(
+      jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel6Layout.createSequentialGroup()
+        .addContainerGap()
+        .addComponent(reductionFactorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+
+    createButton.setText("Create Matrix");
+    createButton.setMaximumSize(new java.awt.Dimension(100, 23));
+    createButton.setMinimumSize(new java.awt.Dimension(100, 23));
+    createButton.setPreferredSize(new java.awt.Dimension(100, 23));
+    createButton.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        createButtonActionPerformed(evt);
+      }
+    });
+
+    showMatrixButton.setText("Show Matrix");
+    showMatrixButton.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        showMatrixButtonActionPerformed(evt);
+      }
+    });
+
+    badMatrixFormatLabel.setText("Bad matrix format!");
+
+    jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Current Color"));
+
+    customColorTextField.setFont(new java.awt.Font("Courier New", 0, 14)); // NOI18N
+    customColorTextField.setText("0xffffff");
+    customColorTextField.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        customColorTextFieldActionPerformed(evt);
+      }
+    });
+
+    illegalColorLabel.setText("Illegal color!");
+
+    previewColorPanel.setBackground(new java.awt.Color(255, 51, 153));
+    previewColorPanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+    javax.swing.GroupLayout previewColorPanelLayout = new javax.swing.GroupLayout(previewColorPanel);
+    previewColorPanel.setLayout(previewColorPanelLayout);
+    previewColorPanelLayout.setHorizontalGroup(
+      previewColorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGap(0, 61, Short.MAX_VALUE)
+    );
+    previewColorPanelLayout.setVerticalGroup(
+      previewColorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGap(0, 19, Short.MAX_VALUE)
+    );
+
+    javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+    jPanel4.setLayout(jPanel4Layout);
+    jPanel4Layout.setHorizontalGroup(
+      jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel4Layout.createSequentialGroup()
+        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addGroup(jPanel4Layout.createSequentialGroup()
+            .addComponent(customColorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(previewColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+          .addComponent(illegalColorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+    jPanel4Layout.setVerticalGroup(
+      jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(jPanel4Layout.createSequentialGroup()
+        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(customColorTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+          .addComponent(previewColorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+        .addComponent(illegalColorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+    );
+
+    clearButton.setLabel("Clear");
+    clearButton.setMaximumSize(new java.awt.Dimension(91, 23));
+    clearButton.setMinimumSize(new java.awt.Dimension(91, 23));
+    clearButton.setPreferredSize(new java.awt.Dimension(91, 23));
+    clearButton.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        clearButtonActionPerformed(evt);
+      }
+    });
+
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(layout.createSequentialGroup()
+        .addGap(20, 20, 20)
+        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addGroup(layout.createSequentialGroup()
+            .addGap(18, 18, 18)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addComponent(matrixGameGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+              .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGap(20, 20, 20)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(layout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                  .addGroup(layout.createSequentialGroup()
+                    .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(badMatrixFormatLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(showMatrixButton, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(createButton, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
+                  .addGroup(layout.createSequentialGroup()
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(10, 10, 10)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 160, Short.MAX_VALUE))))
+              .addGroup(layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(colorChooser, javax.swing.GroupLayout.DEFAULT_SIZE, 673, Short.MAX_VALUE)))
+        .addContainerGap())
+    );
+    layout.setVerticalGroup(
+      layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+      .addGroup(layout.createSequentialGroup()
+        .addContainerGap()
+        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+          .addGroup(layout.createSequentialGroup()
+            .addComponent(colorChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addComponent(matrixGameGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
+              .addGroup(layout.createSequentialGroup()
+                .addGap(11, 11, 11)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+              .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addComponent(jPanel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(createButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(clearButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(badMatrixFormatLabel)
+                    .addComponent(showMatrixButton))))
+              .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+          .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        .addContainerGap())
+    );
+
+    layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {clearButton, createButton, showMatrixButton});
+
+    pack();
+  }// </editor-fold>//GEN-END:initComponents
+
+  private void customColorTextFieldActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_customColorTextFieldActionPerformed
+  {//GEN-HEADEREND:event_customColorTextFieldActionPerformed
+    badMatrixFormatLabel.setVisible(false);
+  }//GEN-LAST:event_customColorTextFieldActionPerformed
+
+  private void decRadioButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_decRadioButtonActionPerformed
+  {//GEN-HEADEREND:event_decRadioButtonActionPerformed
+    badMatrixFormatLabel.setVisible(false);
+    if (!decRadioButton.isSelected())
+      decRadioButton.setSelected(true);
+    else
+    {
+      hexRadioButton.setSelected(false);
+      matrixFormat = "dec";
+    }
+  }//GEN-LAST:event_decRadioButtonActionPerformed
+
+  private void hexRadioButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_hexRadioButtonActionPerformed
+  {//GEN-HEADEREND:event_hexRadioButtonActionPerformed
+    badMatrixFormatLabel.setVisible(false);
+    if (!hexRadioButton.isSelected())
+      hexRadioButton.setSelected(true);
+    else
+    {
+      decRadioButton.setSelected(false);
+      matrixFormat = "hex";
+    }
+
+  }//GEN-LAST:event_hexRadioButtonActionPerformed
+
+  private void cRadioButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_cRadioButtonActionPerformed
+  {//GEN-HEADEREND:event_cRadioButtonActionPerformed
+    badMatrixFormatLabel.setVisible(false);
+    if (!cRadioButton.isSelected())
+      cRadioButton.setSelected(true);
+    else
+    {
+      pythonRadioButton.setSelected(false);
+      language = "c/c++";
+    }
+  }//GEN-LAST:event_cRadioButtonActionPerformed
+
+  private void pythonRadioButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_pythonRadioButtonActionPerformed
+  {//GEN-HEADEREND:event_pythonRadioButtonActionPerformed
+    badMatrixFormatLabel.setVisible(false);
+    if (!pythonRadioButton.isSelected())
+      pythonRadioButton.setSelected(true);
+    else
+    {
+      cRadioButton.setSelected(false);
+      language = "python";
+    }
+  }//GEN-LAST:event_pythonRadioButtonActionPerformed
+
+  private void createButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_createButtonActionPerformed
+  {//GEN-HEADEREND:event_createButtonActionPerformed
+    badMatrixFormatLabel.setVisible(false);
+    if (language.equals("python"))
+      matrixTextField.setText(matrixToTextPython());
+    else  // c/c++
+      matrixTextField.setText(matrixToTextC());
+    matrixTextField.requestFocusInWindow();
+    matrixTextField.selectAll();
+  }//GEN-LAST:event_createButtonActionPerformed
+
+  private void showMatrixButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_showMatrixButtonActionPerformed
+  {//GEN-HEADEREND:event_showMatrixButtonActionPerformed
+    badMatrixFormatLabel.setVisible(false);
+    showMatrix();
+  }//GEN-LAST:event_showMatrixButtonActionPerformed
+
+  private void clearButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_clearButtonActionPerformed
+  {//GEN-HEADEREND:event_clearButtonActionPerformed
+   
+    matrixTextField.setText("");
+    clear();
+  }//GEN-LAST:event_clearButtonActionPerformed
+
+  private void showMatrix()
+  {
+    try
+    {
+      String m = matrixTextField.getText().trim();
+      if (language.equals("python"))
+      {
+        if (m.contains("{"))
+          throw new Exception();
+        String javaMatrix = m.replace('(', '{');
+        javaMatrix = javaMatrix.replace(')', '}');
+        javaMatrix = javaMatrix.substring(javaMatrix.indexOf('=') + 1);
+        showJavaMatrix(javaMatrix);
+      }
+      else // C/C++
+      {
+        String javaMatrix = m.substring(m.indexOf('=') + 1);
+        showJavaMatrix(javaMatrix);
+      }
+    }
+    catch (Exception ex)
+    {
+      badMatrixFormatLabel.setVisible(true);
+    }
+  }
+  
+  private void clear()
+  {
+    for (int i = 0; i < 8; i++)
+      for (int k = 0; k < 8; k++)
+        colorMatrix[i][k] = Color.BLACK;
+    
+    repaintMatrix();
+  }  
+
+  private void showJavaMatrix(String m)
+  {
+    String[] lines = m.split("}");
+    for (int i = 0; i < 8; i++)
+    {
+      String line = lines[i].replace("{", "").replace("\n", "").replace("\r", "");
+      if (i == 0)
+        line = ',' + line;
+      String[] items = line.split(",");
+      for (int k = 0; k < 8; k++)
+      {
+        int colorInt = Integer.decode(items[k + 1].trim());
+        int d = getReductionFactor();
+        Color color = intToColor(colorInt, d);
+        colorMatrix[i][k] = color;
+      }
+    }
+    repaintMatrix();
+  }
+
+  void repaintMatrix()
+  {
+    GGBackground bg1 = ledGameGrid.getBg();
+    GGBackground bg2 = matrixGameGrid.getBg();
+    for (int i = 0; i < 8; i++)
+    {
+      for (int k = 0; k < 8; k++)
+      {
+        Color color = colorMatrix[i][k];
+        bg1.setPaintColor(color);
+        bg1.fillCircle(coordMatrix[i][k], 6);
+        Location loc = new Location(k, i);
+        bg2.fillCell(loc, color);
+      }
+    }
+    bg2.drawGridLines(matrixGridColor);
+  }
+
+  private int getReductionFactor()
+  {
+    String s = reductionFactorTextField.getText();
+    int d = 2;
+    try
+    {
+      d = Integer.parseInt(s);
+    }
+    catch (NumberFormatException ex)
+    {
+      reductionFactorTextField.setText("2");
+    }
+    if (d < 1 || d > 50)
+    {
+      d = 2;
+      reductionFactorTextField.setText("2");
+    }
+    return d;
+  }
+
+  private String matrixToTextPython()
+  {
+    int d = getReductionFactor();
+    String s = "matrix = (\n";
+    for (int i = 0; i < 8; i++)
+    {
+      s += "(";
+      for (int k = 0; k < 8; k++)
+      {
+        if (matrixFormat.equals("hex"))
+          s += String.format("0x%06x", colorToInt(colorMatrix[i][k], d));
+        else // dec
+          s += Integer.toString(colorToInt(colorMatrix[i][k], d));
+        if (k < 7)
+          s += ",";
+      }
+      s += ")";
+      if (i < 7)
+        s += ",\n";
+    }
+    s += ")\n";
+    return s;
+  }
+
+  private String matrixToTextC()
+  {
+    int d = getReductionFactor();
+    String s = "int matrix[8][8] = {\n";
+    for (int i = 0; i < 8; i++)
+    {
+      s += "{";
+      for (int k = 0; k < 8; k++)
+      {
+        if (matrixFormat.equals("hex"))
+          s += String.format("0x%06x", colorToInt(colorMatrix[i][k], d));
+        else // dec
+          s += Integer.toString(colorToInt(colorMatrix[i][k], d));
+        if (k < 7)
+          s += ",";
+      }
+      s += "}";
+      if (i < 7)
+        s += ",\n";
+    }
+    s += "};\n";
+    return s;
+  }
+
+  private Color hexToColor(String hex)
+  {
+    int colorInt = 0;
+    try
+    {
+      colorInt = Integer.decode(hex);
+    }
+    catch (NumberFormatException ex)
+    {
+      return null;
+    }
+    return new Color(colorInt);
+  }
+
+  private int colorToInt(Color color, int divider)
+  {
+    int r = color.getRed() / divider;
+    int g = color.getGreen() / divider;
+    int b = color.getBlue() / divider;
+    int a = 0;
+    return new Color(r, g, b, a).getRGB();
+  }
+
+  private Color intToColor(int colorInt, int divider)
+  {
+    int b = (colorInt & 0xFF) * divider;
+    b = Math.min(255, b);
+    int g = ((colorInt >> 8) & 0xFF) * divider;
+    g = Math.min(255, g);
+    int r = ((colorInt >> 16) & 0xFF) * divider;
+    r = Math.min(255, r);
+    int a = 255;
+    return new Color(r, g, b, a);
+  }
+
+  /**
+   * @param args the command line arguments
+   */
+  public static void main(String args[])
+  {
+    EventQueue.invokeLater(new Runnable()
+    {
+      public void run()
+      {
+        new OxoEditor().setVisible(true);
+      }
+    });
+  }
+  // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JLabel badMatrixFormatLabel;
+  private javax.swing.JRadioButton cRadioButton;
+  private javax.swing.JButton clearButton;
+  private javax.swing.JColorChooser colorChooser;
+  private javax.swing.JButton createButton;
+  private java.awt.TextField customColorTextField;
+  private javax.swing.JRadioButton decRadioButton;
+  private javax.swing.JRadioButton hexRadioButton;
+  private javax.swing.JLabel illegalColorLabel;
+  private javax.swing.JPanel jPanel1;
+  private javax.swing.JPanel jPanel2;
+  private javax.swing.JPanel jPanel3;
+  private javax.swing.JPanel jPanel4;
+  private javax.swing.JPanel jPanel5;
+  private javax.swing.JPanel jPanel6;
+  private javax.swing.JScrollPane jScrollPane1;
+  private ch.aplu.jgamegrid.GameGrid ledGameGrid;
+  private ch.aplu.jgamegrid.GameGrid matrixGameGrid;
+  private javax.swing.JTextArea matrixTextField;
+  private javax.swing.JPanel previewColorPanel;
+  private javax.swing.JRadioButton pythonRadioButton;
+  private java.awt.TextField reductionFactorTextField;
+  private javax.swing.JButton showMatrixButton;
+  // End of variables declaration//GEN-END:variables
+  private Point[][] coordMatrix = new Point[8][8];
+  private Color[][] colorMatrix = new Color[8][8];
+  private String matrixFormat = "hex";
+  private String language = "python";
+
+}

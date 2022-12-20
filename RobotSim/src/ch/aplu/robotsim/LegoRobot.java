@@ -1,4 +1,4 @@
-// LegoRobot.java
+// LegoRobot.javafa
 
 /*
  This software is part of the RobotSim library.
@@ -147,39 +147,39 @@ public class LegoRobot
       {
         gg.addMouseListener(
           new GGMouseListener()
+        {
+          public boolean mouseEvent(GGMouse mouse)
           {
-            public boolean mouseEvent(GGMouse mouse)
+            if (mouse.getEvent() == GGMouse.lPress)
             {
-              if (mouse.getEvent() == GGMouse.lPress)
+              Location loc = gg.toLocationInGrid(mouse.getX(), mouse.getY());
+              // Search for closest
+              int dclosest = 1000;
+              Torch closest = null;
+              for (Torch t : RobotContext.torches)
               {
-                Location loc = gg.toLocationInGrid(mouse.getX(), mouse.getY());
-                // Search for closest
-                int dclosest = 1000;
-                Torch closest = null;
-                for (Torch t : RobotContext.torches)
+                int d = loc.getDistanceTo(t.getLocation());
+                if (d < dclosest)
                 {
-                  int d = loc.getDistanceTo(t.getLocation());
-                  if (d < dclosest)
-                  {
-                    dclosest = d;
-                    closest = t;
-                  }
+                  dclosest = d;
+                  closest = t;
                 }
-                if (dclosest < 20)
-                  tActive = closest;
               }
-              if (mouse.getEvent() == GGMouse.lDrag && tActive != null)
-              {
-                tActive.setPixelLocation(mouse.getX(), mouse.getY());
-              }
-              if (mouse.getEvent() == GGMouse.lRelease && tActive != null)
-              {
-                tActive.setPixelLocation(mouse.getX(), mouse.getY());
-                tActive = null;
-              }
-              return true;
+              if (dclosest < 20)
+                tActive = closest;
             }
-          },
+            if (mouse.getEvent() == GGMouse.lDrag && tActive != null)
+            {
+              tActive.setPixelLocation(mouse.getX(), mouse.getY());
+            }
+            if (mouse.getEvent() == GGMouse.lRelease && tActive != null)
+            {
+              tActive.setPixelLocation(mouse.getX(), mouse.getY());
+              tActive = null;
+            }
+            return true;
+          }
+        },
           GGMouse.lPress | GGMouse.lDrag | GGMouse.lRelease);
       }
       for (int i = 0; i < nbTorches; i++)
@@ -194,7 +194,7 @@ public class LegoRobot
       gg.addActorNoRefresh(this, startLocation, startDirection);
       pos = new GGVector(getLocation().x, getLocation().y); // Double coordinates
 
-      wheelDistance = getHeight(0) - 10;
+      wheelDistance = getHeight(0) - 7;
       addActorCollisionListener(this);
       setCollisionCircle(collisionCenter, collisionRadius);
 
@@ -218,6 +218,11 @@ public class LegoRobot
       }
       if (appClass != null)
         exec(appClass, gg, "_init");
+
+      xold = getX();
+      yold = getY();
+      mark = new Mark();
+      gg.addActor(mark, new Location(-100, -100));  // Not shown
     }
 
     public int collide(Actor actor1, Actor actor2)
@@ -259,6 +264,7 @@ public class LegoRobot
           }
           break;
         case DisposeOnClose:
+          gg.stopGameThread();
           gg.dispose();
           break;
         case NothingOnClose:
@@ -318,6 +324,27 @@ public class LegoRobot
       pos = new GGVector(getLocationStart().x, getLocationStart().y); // Double coordinates
     }
 
+    private void put(GGVector pos)
+    {
+      GGBackground bg = gg.getBg();
+      synchronized (bg)
+      {
+        int xnew = (int)pos.x;
+        int ynew = (int)pos.y;
+        Location loc = new Location(xnew, ynew);
+        setLocation(loc);
+        if (RobotContext.isTraceEnabled)
+        {
+          Color oldColor = bg.getPaintColor();
+          bg.setPaintColor(Color.blue);
+          bg.drawLine(xold, yold, xnew, ynew);
+          bg.setPaintColor(oldColor);
+        }
+        xold = xnew;
+        yold = ynew;
+      }
+    }
+
     public void act()
     {
       synchronized (LegoRobot.class)
@@ -357,6 +384,7 @@ public class LegoRobot
         // ------------------ We have a gear --------------------
         if (gear != null)
         {
+          double gearIncrement;
           int speed = gear.getSpeed();
           if (speed == 0)
             return;
@@ -385,20 +413,26 @@ public class LegoRobot
           {
             case FORWARD:
               advance(SharedConstants.nbSteps * speed);
+              mark.setLocation(new Location(-100, -100));
               break;
             case BACKWARD:
               advance(-SharedConstants.nbSteps * speed);
+              mark.setLocation(new Location(-100, -100));
               break;
             case LEFT:
               if (gear.getRadius() == 0)
               {
                 dphi = SharedConstants.gearTurnAngle * speed;
                 turn(-dphi);
+                if (RobotContext.isRotCenterEnabled)
+                  mark.setLocation(getLocation());
               }
               else
               {
                 pos = getRotatedPosition(pos, rotCenter, dphi);
-                setLocation(new Location((int)(pos.x), (int)(pos.y)));
+                if (RobotContext.isRotCenterEnabled)
+                  mark.setLocation(new Location(rotCenter.x, rotCenter.y));
+                put(pos);
                 dir += dphi;
                 setDirection(dir);
               }
@@ -408,14 +442,39 @@ public class LegoRobot
               {
                 dphi = SharedConstants.gearTurnAngle * speed;
                 turn(dphi);
+                if (RobotContext.isRotCenterEnabled)
+                  mark.setLocation(getLocation());
               }
               else
               {
                 pos = getRotatedPosition(pos, rotCenter, dphi);
-                setLocation(new Location((int)(pos.x), (int)(pos.y)));
+                if (RobotContext.isRotCenterEnabled)
+                  mark.setLocation(new Location(rotCenter.x, rotCenter.y));
+                put(pos);
                 dir += dphi;
                 setDirection(dir);
               }
+              break;
+
+            case MOVETO:
+              gearIncrement = gear.getSpeed() / 10.0;
+              gear.setIncrement((int)gearIncrement);
+              if (gear.isForward)
+                advance(SharedConstants.nbSteps * speed);
+              else
+                advance(-SharedConstants.nbSteps * speed);
+              mark.setLocation(new Location(-100, -100));
+              break;
+            case TURNTO:
+              gearIncrement = gear.getSpeed() / 10.0;
+              gear.setIncrement((int)gearIncrement);
+              dphi = SharedConstants.gearTurnAngle * speed;
+              if (gear.isForward)
+                turn(dphi);
+              else
+                turn(-dphi);
+              if (RobotContext.isRotCenterEnabled)
+                mark.setLocation(getLocation());
               break;
           }
         }
@@ -423,15 +482,53 @@ public class LegoRobot
         // ------------------ We have two motors --------------
         if (!motors.isEmpty() && motors.size() == 2)
         {
-          Motor motorA = (Motor)motors.get(0);
-          Motor motorB = (Motor)motors.get(1);
+          double radius;
+          Motor mot1 = (Motor)motors.get(0);
+          Motor mot2 = (Motor)motors.get(1);
+          Motor motorA;
+          Motor motorB;
+          if (mot1.getPort() == MotorPort.A)
+          {
+            motorA = mot1;
+            motorB = mot2;
+          }
+          else
+          {
+            motorA = mot2;
+            motorB = mot1;
+          }
+
           int speedA = motorA.getSpeed();
           int speedB = motorB.getSpeed();
           if (speedA == 0 && speedB == 0)
             return;
+          leftMotIncrement = speedA / 10.0;
+          rightMotIncrement = speedB / 10.0;
           MotorState stateA = motorA.getState();
           MotorState stateB = motorB.getState();
-          double radius;
+          initWheelActors();
+
+          if (stateA == MotorState.ROTATE)
+          {
+            motorA.setIncrement((int)leftMotIncrement);
+            leftWheel.setDirection(leftMotDirection);
+            if (motorA.isForward)
+              leftMotDirection += leftMotIncrement;
+            else
+              leftMotDirection -= leftMotIncrement;
+            showCount(motorA.getMotorCount(), motorB.getMotorCount());
+          }
+
+          if (stateB == MotorState.ROTATE)
+          {
+            motorB.setIncrement((int)rightMotIncrement);
+            rightWheel.setDirection(rightMotDirection);
+            if (motorB.isForward)
+              rightMotDirection += rightMotIncrement;
+            else
+              rightMotDirection -= rightMotIncrement;
+            showCount(motorA.getMotorCount(), motorB.getMotorCount());
+          }
 
           if (stateA != oldMotorStateA || stateB != oldMotorStateB || speedA != oldSpeedA || speedB != oldSpeedB)  // State change
           {
@@ -445,133 +542,178 @@ public class LegoRobot
           if (stateA == MotorState.FORWARD && stateB == MotorState.FORWARD)
           {
             if (speedA == speedB)
+            {
               advance(SharedConstants.nbSteps * speedA);
+              mark.setLocation(new Location(-100, -100));
+            }
             else
             {
               if (isRotationInit)
               {
                 isRotationInit = false;
-                sign = (speedA > speedB ? -1 : 1);
+                sign = (speedA > speedB ? 1 : -1);
                 radius = wheelDistance / 2.0 * (speedA + speedB) / Math.abs(speedB - speedA);
                 initRot(sign * radius);
                 rotInc = SharedConstants.motorRotIncFactor * (speedA + speedB) / radius;
+                if (RobotContext.isRotCenterEnabled)
+                  mark.setLocation(new Location(rotCenter.x, rotCenter.y));
               }
               double rot = sign * rotInc;
               pos = getRotatedPosition(pos, rotCenter, rot);
-              setLocation(new Location((int)(pos.x), (int)(pos.y)));
+              put(pos);
               dir += rot;
               setDirection(dir);
             }
+            leftWheel.setDirection(leftMotDirection);
+            rightWheel.setDirection(rightMotDirection);
+            leftMotDirection += leftMotIncrement;
+            rightMotDirection += rightMotIncrement;
+            showCount((int)leftMotDirection, (int)rightMotDirection);
           }
+
           if (stateA == MotorState.BACKWARD && stateB == MotorState.BACKWARD)
           {
             if (speedA == speedB)
+            {
               advance(-SharedConstants.nbSteps * speedA);
+              mark.setLocation(new Location(-100, -100));
+            }
             else
             {
               if (isRotationInit)
               {
                 isRotationInit = false;
-                sign = (speedA > speedB ? -1 : 1);
+                sign = (speedA > speedB ? 1 : -1);
                 radius = wheelDistance / 2.0 * (speedA + speedB) / Math.abs(speedA - speedB);
                 initRot(sign * radius);
                 rotInc = SharedConstants.motorRotIncFactor * (speedA + speedB) / radius;
+                if (RobotContext.isRotCenterEnabled)
+                  mark.setLocation(new Location(rotCenter.x, rotCenter.y));
               }
               double rot = -sign * rotInc;
               pos = getRotatedPosition(pos, rotCenter, rot);
-              setLocation(new Location((int)(pos.x), (int)(pos.y)));
+              put(pos);
               dir += rot;
               setDirection(dir);
             }
+            leftWheel.setDirection(leftMotDirection);
+            rightWheel.setDirection(rightMotDirection);
+            leftMotDirection -= leftMotIncrement;
+            rightMotDirection -= rightMotIncrement;
+            showCount((int)leftMotDirection, (int)rightMotDirection);
           }
-          if (stateA == MotorState.FORWARD && stateB == MotorState.BACKWARD)
-          {
-            if (speedA == speedB)
-              turn(-(int)(speedA * SharedConstants.motTurnAngle));
-            else
-            {
-              if (isRotationInit)
-              {
-                isRotationInit = false;
-                sign = (speedA > speedB ? -1 : 1);
-                radius = wheelDistance / 200.0 * Math.abs(speedA - speedB);
-                initRot(sign * radius);
-                rotInc = SharedConstants.motorRotIncFactor * Math.max(speedA, speedB) / (wheelDistance + radius);
-              }
-              double rot = -rotInc;
-              pos = getRotatedPosition(pos, rotCenter, rot);
-              setLocation(new Location((int)(pos.x), (int)(pos.y)));
-              dir += rot;
-              setDirection(dir);
-            }
-          }
+
           if (stateA == MotorState.BACKWARD && stateB == MotorState.FORWARD)
           {
             if (speedA == speedB)
-              turn((int)(speedA * SharedConstants.motTurnAngle));
+            {
+              turn(-(int)(speedA * SharedConstants.motTurnAngle));
+              if (RobotContext.isRotCenterEnabled)
+                mark.setLocation(getLocation());
+            }
             else
             {
               if (isRotationInit)
               {
                 isRotationInit = false;
-                sign = (speedA > speedB ? -1 : 1);
+                sign = (speedA > speedB ? 1 : -1);
                 radius = wheelDistance / 200.0 * Math.abs(speedA - speedB);
                 initRot(sign * radius);
-                rotInc = SharedConstants.motorRotIncFactor * Math.max(speedA, speedB) / (wheelDistance - Math.abs(radius));
+                rotInc = SharedConstants.motorRotIncFactor * Math.max(speedA, speedB) / (wheelDistance + radius);
+                if (RobotContext.isRotCenterEnabled)
+                  mark.setLocation(new Location(rotCenter.x, rotCenter.y));
               }
-              double rot = rotInc;
+              double rot = -rotInc;
               pos = getRotatedPosition(pos, rotCenter, rot);
-              setLocation(new Location((int)(pos.x), (int)(pos.y)));
+              put(pos);
               dir += rot;
               setDirection(dir);
             }
+            leftWheel.setDirection(leftMotDirection);
+            rightWheel.setDirection(rightMotDirection);
+            leftMotDirection -= leftMotIncrement;
+            rightMotDirection += rightMotIncrement;
+            showCount((int)leftMotDirection, (int)rightMotDirection);
           }
-          if (stateA == MotorState.FORWARD && stateB == MotorState.STOPPED)
+
+          if (stateA == MotorState.FORWARD && stateB == MotorState.BACKWARD)
           {
-            if (isRotationInit)
+            if (speedA == speedB)
             {
-              isRotationInit = false;
-              radius = wheelDistance / 2;
-              initRot(-radius);
-              rotInc = SharedConstants.motorRotIncFactor * speedA / radius;
+              turn((int)(speedA * SharedConstants.motTurnAngle));
+              if (RobotContext.isRotCenterEnabled)
+                mark.setLocation(getLocation());
             }
-            double rot = -rotInc;
-            pos = getRotatedPosition(pos, rotCenter, rot);
-            setLocation(new Location((int)(pos.x), (int)(pos.y)));
-            dir += rot;
-            setDirection(dir);
-          }
-          if (stateA == MotorState.BACKWARD && stateB == MotorState.STOPPED)
-          {
-            if (isRotationInit)
+            else
             {
-              isRotationInit = false;
-              radius = wheelDistance / 2;
-              initRot(-radius);
-              rotInc = SharedConstants.motorRotIncFactor * speedA / radius;
+              if (isRotationInit)
+              {
+                isRotationInit = false;
+                sign = (speedA > speedB ? 1 : -1);
+                radius = wheelDistance / 200.0 * Math.abs(speedA - speedB);
+                initRot(sign * radius);
+                rotInc = SharedConstants.motorRotIncFactor * Math.max(speedA, speedB) / (wheelDistance - Math.abs(radius));
+                if (RobotContext.isRotCenterEnabled)
+                  mark.setLocation(new Location(rotCenter.x, rotCenter.y));
+              }
+              double rot = rotInc;
+              pos = getRotatedPosition(pos, rotCenter, rot);
+              put(pos);
+              dir += rot;
+              setDirection(dir);
             }
-            double rot = rotInc;
-            pos = getRotatedPosition(pos, rotCenter, rot);
-            setLocation(new Location((int)(pos.x), (int)(pos.y)));
-            dir += rot;
-            setDirection(dir);
+            leftWheel.setDirection(leftMotDirection);
+            rightWheel.setDirection(rightMotDirection);
+            leftMotDirection += leftMotIncrement;
+            rightMotDirection -= rightMotIncrement;
+            showCount((int)leftMotDirection, (int)rightMotDirection);
           }
+
           if (stateA == MotorState.STOPPED && stateB == MotorState.FORWARD)
           {
             if (isRotationInit)
             {
               isRotationInit = false;
               radius = wheelDistance / 2;
-              initRot(radius);
-              rotInc = SharedConstants.motorRotIncFactor * speedB / radius;
+              initRot(-radius);
+              rotInc = SharedConstants.motorRotIncFactor * speedA / radius;
+              if (RobotContext.isRotCenterEnabled)
+                mark.setLocation(new Location(rotCenter.x, rotCenter.y));
+            }
+            double rot = -rotInc;
+            pos = getRotatedPosition(pos, rotCenter, rot);
+            put(pos);
+            dir += rot;
+            setDirection(dir);
+            leftWheel.setDirection(leftMotDirection);
+            rightWheel.setDirection(rightMotDirection);
+            rightMotDirection += rightMotIncrement;
+            showCount((int)leftMotDirection, (int)rightMotDirection);
+          }
+
+          if (stateA == MotorState.STOPPED && stateB == MotorState.BACKWARD)
+          {
+            if (isRotationInit)
+            {
+              isRotationInit = false;
+              radius = wheelDistance / 2;
+              initRot(-radius);
+              rotInc = SharedConstants.motorRotIncFactor * speedA / radius;
+              if (RobotContext.isRotCenterEnabled)
+                mark.setLocation(new Location(rotCenter.x, rotCenter.y));
             }
             double rot = rotInc;
             pos = getRotatedPosition(pos, rotCenter, rot);
-            setLocation(new Location((int)(pos.x), (int)(pos.y)));
+            put(pos);
             dir += rot;
             setDirection(dir);
+            leftWheel.setDirection(leftMotDirection);
+            rightWheel.setDirection(rightMotDirection);
+            rightMotDirection -= rightMotIncrement;
+            showCount((int)leftMotDirection, (int)rightMotDirection);
           }
-          if (stateA == MotorState.STOPPED && stateB == MotorState.BACKWARD)
+
+          if (stateA == MotorState.FORWARD && stateB == MotorState.STOPPED)
           {
             if (isRotationInit)
             {
@@ -579,15 +721,103 @@ public class LegoRobot
               radius = wheelDistance / 2;
               initRot(radius);
               rotInc = SharedConstants.motorRotIncFactor * speedB / radius;
+              if (RobotContext.isRotCenterEnabled)
+                mark.setLocation(new Location(rotCenter.x, rotCenter.y));
+            }
+            double rot = rotInc;
+            pos = getRotatedPosition(pos, rotCenter, rot);
+            put(pos);
+            dir += rot;
+            setDirection(dir);
+            leftWheel.setDirection(leftMotDirection);
+            rightWheel.setDirection(rightMotDirection);
+            leftMotDirection += leftMotIncrement;
+            showCount((int)leftMotDirection, (int)rightMotDirection);
+          }
+
+          if (stateA == MotorState.BACKWARD && stateB == MotorState.STOPPED)
+          {
+            if (isRotationInit)
+            {
+              isRotationInit = false;
+              radius = wheelDistance / 2;
+              initRot(radius);
+              rotInc = SharedConstants.motorRotIncFactor * speedB / radius;
+              if (RobotContext.isRotCenterEnabled)
+                mark.setLocation(new Location(rotCenter.x, rotCenter.y));
             }
             double rot = -rotInc;
             pos = getRotatedPosition(pos, rotCenter, rot);
-            setLocation(new Location((int)(pos.x), (int)(pos.y)));
+            put(pos);
             dir += rot;
             setDirection(dir);
+            leftWheel.setDirection(leftMotDirection);
+            rightWheel.setDirection(rightMotDirection);
+            leftMotDirection -= leftMotIncrement;
+            showCount((int)leftMotDirection, (int)rightMotDirection);
           }
+
           if (stateA == MotorState.STOPPED && stateB == MotorState.STOPPED)
             return;
+
+        }
+
+        if (!motors.isEmpty() && motors.size() == 1)  // we have 1 motor
+        {
+          Motor mot = (Motor)motors.get(0);
+          Motor motorA;
+          Motor motorB;
+          int speedA;
+          int speedB;
+          MotorState stateA;
+          MotorState stateB;
+          if (mot.getPort() == MotorPort.A)
+          {
+            motorA = mot;
+            motorB = null;
+            speedA = motorA.getSpeed();
+            speedB = 0;
+            stateA = motorA.getState();
+            stateB = null;
+            initLeftWheelActor();
+          }
+          else
+          {
+            motorA = null;
+            motorB = mot;
+            speedA = 0;
+            speedB = motorB.getSpeed();
+            stateA = null;
+            stateB = motorB.getState();
+            initRightWheelActor();
+          }
+
+          if (speedA == 0 && speedB == 0)
+            return;
+          leftMotIncrement = speedA / 10.0;
+          rightMotIncrement = speedB / 10.0;
+
+          if (stateA == MotorState.ROTATE)
+          {
+            motorA.setIncrement((int)leftMotIncrement);
+            leftWheel.setDirection(leftMotDirection);
+            if (motorA.isForward)
+              leftMotDirection += leftMotIncrement;
+            else
+              leftMotDirection -= leftMotIncrement;
+            showLeftCount(motorA.getMotorCount());
+          }
+
+          if (stateB == MotorState.ROTATE)
+          {
+            motorB.setIncrement((int)rightMotIncrement);
+            rightWheel.setDirection(rightMotDirection);
+            if (motorB.isForward)
+              rightMotDirection += rightMotIncrement;
+            else
+              rightMotDirection -= rightMotIncrement;
+            showRightCount(motorB.getMotorCount());
+          }
         }
       }
     }
@@ -597,7 +827,7 @@ public class LegoRobot
       pos = pos.add(
         new GGVector(d * Math.cos(Math.toRadians(getDirection())),
           d * Math.sin(Math.toRadians(getDirection()))));
-      setLocation(new Location((int)(pos.x + 0.5), (int)(pos.y + 0.5)));
+      put(pos.add(new GGVector(0.5, 0.5)));
     }
 
     private void initRot(double radius)
@@ -867,8 +1097,8 @@ public class LegoRobot
   private static GameGrid gg;
   private static Robot robot;
   private int nbObstacles = 0;
-  private String title = "RobotSim V"
-    + SharedConstants.VERSION.substring(0, SharedConstants.VERSION.indexOf(" "));
+  private Mark mark;
+  private String title = "RobotSim V" + SharedConstants.VERSION + " [www.aplu.ch]";
   private ArrayList<Part> parts = new ArrayList<Part>();
   private double rotInc;
   private int currentSpeed;
@@ -891,6 +1121,19 @@ public class LegoRobot
   private int buttonID;
   private ButtonListener buttonListener = null;
   private Torch tActive = null;
+  private Led led;
+  private Actor leftWheel;
+  private Actor rightWheel;
+  private double leftMotDirection = 0;
+  private double rightMotDirection = 0;
+  private double leftMotIncrement = 0;
+  private double rightMotIncrement = 0;
+  private TextActor leftCount = null;
+  private TextActor rightCount = null;
+  private Font countFont = new Font("Courier", Font.PLAIN, 16);
+  private int xold;
+  private int yold;
+  private Alarm alarm;
 
   /**
    * Creates a robot with its playground using defaults from RobotContext.
@@ -916,6 +1159,9 @@ public class LegoRobot
       System.setOut(interceptor);
     }
     RobotInstance.setRobot(this);
+    led = new Led();
+    addPart(led);
+    alarm = new Alarm(this, 2500, 40);
   }
 
   /**
@@ -932,6 +1178,41 @@ public class LegoRobot
       gg.setPaintOrder(getClass(), part.getClass());  // On top of obstacles
       gg.setActOrder(getClass());  // First
       gg.setPaintOrder(Torch.class);  // Torches on top
+    }
+  }
+
+  private void initWheelActors()
+  {
+    if (leftWheel == null || rightWheel == null)
+    {
+      gg.addActorNoRefresh(new Actor("sprites/floorline.gif"), new Location(438, 90));
+      leftWheel = new Actor(true, "sprites/leftwheel.gif");
+      rightWheel = new Actor(true, "sprites/rightwheel.gif");
+      gg.addActorNoRefresh(leftWheel, new Location(408, 60));
+      gg.addActorNoRefresh(rightWheel, new Location(468, 60));
+      showCount(0, 0);
+    }
+  }
+
+  private void initLeftWheelActor()
+  {
+    if (leftWheel == null)
+    {
+      gg.addActorNoRefresh(new Actor("sprites/floorline.gif"), new Location(438, 90));
+      leftWheel = new Actor(true, "sprites/leftwheel.gif");
+      gg.addActorNoRefresh(leftWheel, new Location(408, 60));
+      showLeftCount(0);
+    }
+  }
+
+  private void initRightWheelActor()
+  {
+    if (rightWheel == null)
+    {
+      gg.addActorNoRefresh(new Actor("sprites/floorline.gif"), new Location(438, 90));
+      rightWheel = new Actor(true, "sprites/rightwheel.gif");
+      gg.addActorNoRefresh(rightWheel, new Location(468, 60));
+      showRightCount(0);
     }
   }
 
@@ -985,6 +1266,7 @@ public class LegoRobot
       }
     }
     gg.doPause();
+    setAlarm(false);
   }
 
   /**
@@ -1318,6 +1600,26 @@ public class LegoRobot
   }
 
   /**
+   * Turn on/off the brick's left/right LEDs (only affected in pair).
+   * Pattern mask:<br>
+   * 0: off<br>
+   * 1: green<br>
+   * 2: red<br>
+   * 3: red bright<br>
+   * 4: green blinking<br>
+   * 5: red blinking<br>
+   * 6: red blinking bright<br>
+   * 7: green double blinking<br>
+   * 8: red double blinking<br>
+   * 9: red double blinking bright<br>
+   * @param pattern the pattern 0..9
+   */
+  public void setLED(int pattern)
+  {
+    led.setLED(pattern);
+  }
+
+  /**
    * Returns always false. For compatiblity with EV3JLib.
    * @return false
    */
@@ -1400,31 +1702,31 @@ public class LegoRobot
       {
         player.addSoundPlayerListener(
           new SoundPlayerListener()
+        {
+          public void notifySoundPlayerStateChange(int reason, int mixerIndex)
           {
-            public void notifySoundPlayerStateChange(int reason, int mixerIndex)
+            switch (reason)
             {
-              switch (reason)
-              {
-                case 0:
+              case 0:
 //                System.out.println("Notify: start playing");
-                  break;
-                case 1:
+                break;
+              case 1:
 //                System.out.println("Notify: resume playing");
-                  break;
-                case 2:
+                break;
+              case 2:
 //                System.out.println("Notify: pause playing");
-                  break;
-                case 3:
+                break;
+              case 3:
 //                System.out.println("Notify: stop playing");
-                  break;
-                case 4:
+                break;
+              case 4:
 //                System.out.println("Notify: end of resource");
-                  Tools.delay(400);
-                  Monitor.wakeUp();
-                  break;
-              }
+                Tools.delay(400);
+                Monitor.wakeUp();
+                break;
             }
           }
+        }
         );
       }
       player.play();
@@ -1435,6 +1737,18 @@ public class LegoRobot
     {
       ex.printStackTrace();
     }
+  }
+
+  /**
+   * Plays a alarm signal in a separate thread.
+   * @param enabled if true, the alarm is startet until called with false
+   */
+  public void setAlarm(boolean enabled)
+  {
+    if (enabled)
+      alarm.start();
+    else
+      alarm.stop();
   }
 
   private AudioFormat getAudioFormat()
@@ -1457,6 +1771,28 @@ public class LegoRobot
 
     return new AudioFormat(sampleRate, sampleSizeInBits,
       channels, signed, bigEndian);
+  }
+
+  private void showLeftCount(int count)
+  {
+    if (leftCount != null)
+      leftCount.removeSelf();
+    leftCount = new TextActor(false, String.format("%1$3s", count), Color.black, Color.white, countFont);
+    gg.addActorNoRefresh(leftCount, new Location(390, 16));
+  }
+
+  private void showRightCount(int count)
+  {
+    if (rightCount != null)
+      rightCount.removeSelf();
+    rightCount = new TextActor(false, String.format("%1$3s", count), Color.black, Color.white, countFont);
+    gg.addActorNoRefresh(rightCount, new Location(450, 16));
+  }
+
+  private void showCount(int left, int right)
+  {
+    showLeftCount(left);
+    showRightCount(right);
   }
 
   public static void debug(String msg)

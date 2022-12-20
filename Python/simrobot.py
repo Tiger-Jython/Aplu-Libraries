@@ -1,14 +1,17 @@
 # simrobot.py
-# AP
-# Version 1.18, Aug 13, 2019
+# Version 1.21, Aug 07, 2020
+# Colorsensor
 
 from javax.swing import *
 from java.awt import *
 from enum import enum
 from java.lang import RuntimeException
 import sys
+import atexit
 
 from ch.aplu.mbrobotsim import MbRobot
+
+del print
 
 if MbRobot.getGameGrid() != None:
     MbRobot.getGameGrid().dispose()
@@ -16,7 +19,7 @@ if MbRobot.getGameGrid() != None:
 try:
     from ch.aplu.robotsim import *
 except:
-    print "Restart TigerJython when changing the robot."
+    print("Restart TigerJython when changing the robot.")
     sys.exit()
 
 if LegoRobot.getGameGrid() != None:
@@ -35,9 +38,12 @@ def _makeRobot():
 
 def _makeGear():
     global _gear
-    if _gear == None:
-        _gear = Gear()
-        _robot.addPart(_gear)
+    if _motors[0] != None or _motors[1] != None:
+        raise RuntimeException("Use of Motors and Gear in same program not supported") 
+    else:    
+        if _gear == None:
+            _gear = Gear()
+            _robot.addPart(_gear)
 
 class _MyUltrasonicSensor:
     def __init__(self, id):
@@ -90,6 +96,28 @@ class _MyLightSensor:
             _robot.addPart(_lightSensors[self._id])
         delay(10)
         return _lightSensors[self._id].getValue()
+        
+class _MyColorSensor:
+    def __init__(self, id):
+        self._id = id
+    
+    def getColor(self):
+        if _colorSensors[self._id] == None:
+            _makeRobot()
+            _colorSensors[self._id] = ColorSensor(_sensorPorts[self._id])
+            _robot.addPart(_colorSensors[self._id])
+        delay(10)
+        return _colorSensors[self._id].getColorStr()  
+
+    def getColorRGB(self):
+        if _colorSensors[self._id] == None:
+            _makeRobot()
+            _colorSensors[self._id] = ColorSensor(_sensorPorts[self._id])
+            _robot.addPart(_colorSensors[self._id])
+        delay(10)    
+        return [_colorSensors[self._id].getColor().getRed(),
+               _colorSensors[self._id].getColor().getGreen(), 
+               _colorSensors[self._id].getColor().getBlue()]        
 
 class _MyTouchSensor:
     def __init__(self, id):
@@ -127,12 +155,15 @@ class _MyMotor:
         self._id = id
     
     def _setup(self):
-        if _motors[self._id] == None:
-            _makeRobot()
-            _motors[0] = Motor(_motorPorts[0])
-            _robot.addPart(_motors[0])
-            _motors[1] = Motor(_motorPorts[1])
-            _robot.addPart(_motors[1])
+        if _gear != None:
+            raise RuntimeException("Use of Motors and Gear in same program not supported") 
+        else:
+            if _motors[self._id] == None:
+                _makeRobot()
+                _motors[0] = Motor(_motorPorts[0])
+                _robot.addPart(_motors[0])
+                _motors[1] = Motor(_motorPorts[1])
+                _robot.addPart(_motors[1])
 
     def _setupSingle(self):
         id = self._id
@@ -200,35 +231,71 @@ def setMeshTriangleColor(color):
 def eraseBeamArea():
     us1.eraseBeamArea()
 
-def forward():
+def forward(*args):
     _makeRobot()
     _makeGear()
-    _gear.forward()
+    if len(args) == 0:
+        _gear.forward()
+    else:
+        dt = int(args[0])
+        _gear.forward()
+        delay(dt)
+        stop()
+        
+def backward(*args):
+    _makeRobot()
+    _makeGear()   
+    if len(args) == 0:
+        _gear.backward()
+    else:
+        dt = int(args[0])
+        _gear.backward()
+        delay(dt)
+        stop()
     
-def backward():
+def left(*args):
     _makeRobot()
     _makeGear()
-    _gear.backward()
+    if len(args) == 0:
+        _gear.left()
+    else:
+        dt = int(args[0])
+        _gear.left()
+        delay(dt)
+        stop()
+     
+def right(*args):
+    _makeRobot()
+    _makeGear()
+    if len(args) == 0:
+        _gear.right()
+    else:
+        dt = int(args[0])
+        _gear.right()
+        delay(dt)
+        stop()
     
-def left():
+def leftArc(r, *args):
     _makeRobot()
     _makeGear()
-    _gear.left()
-    
-def right():
-    _makeRobot()
-    _makeGear()
-    _gear.right()
-    
-def leftArc(r):
-    _makeRobot()
-    _makeGear()
-    _gear.leftArc(r)
+    if len(args) == 0:
+        _gear.leftArc(r)
+    else:
+        dt = int(args[0])
+        _gear.leftArc(r)
+        delay(dt)
+        stop()
 
-def rightArc(r):
+def rightArc(r, *args):
     _makeRobot()
     _makeGear()
-    _gear.rightArc(r)
+    if len(args) == 0:
+        _gear.rightArc(r)
+    else:
+        dt = int(args[0])
+        _gear.rightArc(r)
+        delay(dt)
+        stop()
 
 def stop():
     _makeRobot()
@@ -290,11 +357,20 @@ def isEnterHit():
 
 def playTone(frequency, duration):
     _makeRobot()
-    return _robot.playTone(frequency, duration)
+    _robot.playTone(frequency, duration)
 
 def setLED(pattern):
     _makeRobot()
-    return _robot.setLED(pattern)
+    if pattern == 1:
+        _robot.setLED(2)
+    elif pattern == 2:
+        _robot.setLED(1)    
+    else: 
+        _robot.setLED(pattern)
+
+def setAlarm(on):
+    _makeRobot()
+    _robot.setAlarm(on)
 
 def reset():
     _makeRobot()
@@ -307,6 +383,7 @@ motA = _MyMotor(0)
 motB = _MyMotor(1)
 motL = motA
 motR = motB
+motC = _MyMotor(2)
 
 us1 = _MyUltrasonicSensor(0)
 us2 = _MyUltrasonicSensor(1)
@@ -317,6 +394,11 @@ ls1 = _MyLightSensor(0)
 ls2 = _MyLightSensor(1)
 ls3 = _MyLightSensor(2)
 ls4 = _MyLightSensor(3)
+
+cs1 = _MyColorSensor(0)
+cs2 = _MyColorSensor(1)
+cs3 = _MyColorSensor(2)
+cs4 = _MyColorSensor(3)
 
 ts1 = _MyTouchSensor(0)
 ts2 = _MyTouchSensor(1)
@@ -336,6 +418,7 @@ _robot = None
 _gear = None
 _ultrasonicSensors = [None] * 4
 _lightSensors = [None] * 4
+_colorSensors = [None] * 4
 _touchSensors = [None] * 4
 _motors = [None] * 4
 _motorPorts = [MotorPort.A, MotorPort.B]

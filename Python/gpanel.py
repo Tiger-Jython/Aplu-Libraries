@@ -1066,6 +1066,13 @@ def _toColor(*args):
             return args[0]
         elif type(args[0]) is int: # logo colors
             return makeColor("vga", -args[0])
+        else:
+            try:
+                if isinstance(args[0], color):
+                    return args[0]
+            except NameError:
+                pass
+            return makeColor(args[0])
     elif len(args) == 3: # RGB
         return makeColor(args[0]/255, args[1]/255, args[2]/255)
     else:

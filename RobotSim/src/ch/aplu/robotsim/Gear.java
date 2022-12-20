@@ -25,7 +25,7 @@ public class Gear extends Part
 {
   protected enum GearState
   {
-    FORWARD, BACKWARD, LEFT, RIGHT, STOPPED
+    FORWARD, BACKWARD, LEFT, RIGHT, STOPPED, MOVETO, TURNTO
   };
   private static final Location pos = new Location(0, 0);
   private final int DEFAULT_SPEED = 50;
@@ -33,6 +33,10 @@ public class Gear extends Part
   private double radius;
   private int speed = DEFAULT_SPEED;
   private boolean isMoving = false;
+  protected boolean isForward;
+  private int rotateParam;
+  private int motorCount = 0;
+  private int counterIncrement = 0;
 
   /**
    * Creates a gear instance with right motor plugged into port A, left motor plugged into port B.
@@ -300,6 +304,97 @@ public class Gear extends Part
     delay(1);
     checkPart();
     return super.getLocation();
+  }
+  
+   protected void setIncrement(int increment)
+  {
+    if (isForward)
+    {
+      motorCount += increment;
+      if (motorCount >= rotateParam)
+      {  
+        state = GearState.STOPPED;
+        isMoving = false;
+      }
+    }
+    else
+    {
+      motorCount -= increment;
+      if (motorCount <= rotateParam)
+      {  
+        state = GearState.STOPPED;
+        isMoving = false;
+      }
+    }
+  }
+
+  protected int getRotateParam()
+  {
+    return rotateParam;
+  }
+
+  /**
+   * Sets the rotation counter to zero and moves the gear forward until the given count is reached.
+   * If count is negative, the gear turns backwards.
+   * This method returns when the count is reached and the gear stops.
+   * @see #moveTo(int count, boolean blocking)
+   */
+  public void moveTo(int count)
+  {
+    moveTo(count, true);
+  }
+
+  /**
+   * Sets the rotation counter to zero and moves the gear forward until the given count is reached.
+   * If count is negative, the gear turns backwards.
+   * If blocking = false, the method returns immediately.
+   * @see #moveTo(int count)
+   */
+  public void moveTo(int count, boolean blocking)
+  {
+    checkPart();
+    motorCount = 0;
+    isForward = (count > 0);
+    rotateParam = count;
+    state = GearState.MOVETO;
+    isMoving = true;
+    if (blocking)
+    {
+      while (state != GearState.STOPPED)
+        Tools.delay(1);
+    }
+  }
+  
+  /**
+   * Sets the rotation counter to zero and turns the gear left or right until the given count is reached.
+   * If count is negative, the gear turns counter clockwise.
+   * This method returns when the count is reached and the gear stops.
+   * @see #moveTo(int count, boolean blocking)
+   */
+  public void turnTo(int count)
+  {
+    turnTo(count, true);
+  }
+
+  /**
+   * Sets the rotation counter to zero and turns the gear left or right until the given count is reached.
+   * If count is negative, the gear turns counter clockwise.
+   * If blocking = false, the method returns immediately.
+   * @see #moveTo(int count)
+   */
+  public void turnTo(int count, boolean blocking)
+  {
+    checkPart();
+    motorCount = 0;
+    isForward = (count > 0);
+    rotateParam = count;
+    state = GearState.TURNTO;
+    isMoving = true;
+    if (blocking)
+    {
+      while (state != GearState.STOPPED)
+        Tools.delay(1);
+    }
   }
 
   private void checkPart()

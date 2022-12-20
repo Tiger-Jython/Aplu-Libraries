@@ -32,6 +32,8 @@ public class RobotContext
   protected static boolean isNavigationBar = false;
   protected static boolean isStatusBar = false;
   protected static int statusBarHeight;
+  protected static boolean isTraceEnabled = false;
+  protected static boolean isRotCenterEnabled = false;
   protected static ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
   protected static ArrayList<Location> obstacleLocations = new ArrayList<Location>();
   protected static ArrayList<Target> targets = new ArrayList<Target>();
@@ -81,7 +83,9 @@ public class RobotContext
     startDirection = -90;
     isNavigationBar = false;
     isStatusBar = false;
-
+    isTraceEnabled = false;
+    isRotCenterEnabled = false;
+    
     if (obstacles == null)
       obstacles = new ArrayList<Obstacle>();
     else
@@ -436,6 +440,27 @@ public class RobotContext
     if (LegoRobot.getGameGrid() != null)
       LegoRobot.getGameGrid().setStatusText(text);
   }
+  
+   /**
+   * Enable/disable a trace where the robot moves.
+   * @param enable if true, the trace is shown
+   */
+  public static void enableTrace(boolean enable)
+  {
+    checkRobot();
+    isTraceEnabled = enable;
+  }
+  
+  /**
+   * Enable/disable display of rotation center.
+   * @param enable if true, the rotation center is shown
+   */
+  public static void enableRotCenter(boolean enable)
+  {
+    checkRobot();
+    isRotCenterEnabled = enable;
+  }
+
 
   public static void checkRobot()
   {
