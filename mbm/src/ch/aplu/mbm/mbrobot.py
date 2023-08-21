@@ -1,5 +1,5 @@
 # mbrobot.py
-# Version 2.4, May, 2021
+# Version 2.5, Sept, 2022
 
 import gc
 from microbit import i2c, pin1, pin2, pin8, pin12, pin13, pin14, sleep
@@ -74,6 +74,14 @@ def getDistance():
 def setLED(on):
     pin8.write_digital(on)
     pin12.write_digital(on)
+    
+def setServo(S, Angle):
+    if S == "S1":
+        Servo = 0x14
+    if S == "S2":
+        Servo = 0x15
+    buf = Servo, Angle
+    i2c.write(0x10, bytes(buf))    
 
 pin2.set_pull(pin2.NO_PULL)
 _v = 50 # entspricht default 50

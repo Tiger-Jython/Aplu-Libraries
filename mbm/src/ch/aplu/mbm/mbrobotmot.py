@@ -47,5 +47,3 @@ ledLeft = pin8
 ledRight = pin12
 motL = Motor(0)
 motR = Motor(1)
-
-

@@ -75,4 +75,3 @@ def _render():
         display.clear()
     if -2 <= _x <= 2 and -2 <= _y <= 2:    
         display.set_pixel(_x + 2, 4 - (_y + 2), 9)
-
